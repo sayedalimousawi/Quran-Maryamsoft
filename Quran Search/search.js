@@ -1,6 +1,8 @@
 const QURAN = parseQuranText(typeof QuranText === 'string' ? QuranText : '');
-const QURAN_TG = parseQuranText(typeof QuranTextTG === 'string' ? QuranTextTG : '');
-const SURE_NAMES = parseQuranText(typeof SureText === 'string' ? SureText : '');
+
+let translationDataPromise = null;
+let cachedTranslation = null;
+let cachedSureNames = null;
 
 const ARABIC_DIACRITICS = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u200c]/g;
 const normalizedQueryCache = new Map();
@@ -8,7 +10,6 @@ const normalizedQueryCache = new Map();
 const MAX_RENDERED_RESULTS = 200;
 
 const QURAN_NORMALIZED = normalizeQuranText(QURAN);
-const QURAN_TG_NORMALIZED = normalizeQuranText(QURAN_TG);
 const INVERTED_INDEX = buildInvertedIndex(QURAN_NORMALIZED);
 
 function parseQuranText(text) {
@@ -86,6 +87,78 @@ function debounce(fn, delay) {
   };
 }
 
+const loadedScripts = new Set();
+
+function loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(`script[data-dynamic-src="${src}"]`);
+
+    if (existingScript) {
+      if (existingScript.dataset.loaded === 'true') {
+        resolve();
+        return;
+      }
+
+      existingScript.addEventListener('load', () => resolve(), { once: true });
+      existingScript.addEventListener('error', () => reject(new Error(`امکان بارگذاری ${src} وجود ندارد.`)), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.dataset.dynamicSrc = src;
+    script.onload = () => {
+      loadedScripts.add(src);
+      script.dataset.loaded = 'true';
+      resolve();
+    };
+    script.onerror = () => reject(new Error(`امکان بارگذاری ${src} وجود ندارد.`));
+    document.head.appendChild(script);
+  });
+}
+
+function loadTranslationResources() {
+  if (cachedTranslation && cachedSureNames) {
+    return Promise.resolve({ translation: cachedTranslation, sureNames: cachedSureNames });
+  }
+
+  if (translationDataPromise) {
+    return translationDataPromise;
+  }
+
+  translationDataPromise = (async () => {
+    const loadPromises = [];
+
+    if (typeof QuranTextTG !== 'string') {
+      loadPromises.push(loadScriptOnce('QuranTG.js'));
+    }
+
+    if (typeof SureText !== 'string') {
+      loadPromises.push(loadScriptOnce('Sure.js'));
+    }
+
+    if (loadPromises.length) {
+      await Promise.all(loadPromises);
+    }
+
+    if (typeof QuranTextTG !== 'string' || typeof SureText !== 'string') {
+      throw new Error('ترجمه یا نام سوره‌ها در دسترس نیست.');
+    }
+
+    cachedTranslation = parseQuranText(QuranTextTG);
+    cachedSureNames = parseQuranText(SureText);
+
+    return { translation: cachedTranslation, sureNames: cachedSureNames };
+  })();
+
+  translationDataPromise.catch(() => {
+    translationDataPromise = null;
+  });
+
+  return translationDataPromise;
+}
+
 function escapeHtml(value) {
   return value
     .replace(/&/g, '&amp;')
@@ -131,7 +204,7 @@ function renderResults(container, matches) {
   });
 }
 
-function searchAyat(query) {
+function searchAyat(query, translation, suraNames) {
   const tokens = tokenize(query);
 
   if (!tokens.length) {
@@ -146,8 +219,8 @@ function searchAyat(query) {
     .sort((a, b) => (a.suraIndex === b.suraIndex ? a.ayaIndex - b.ayaIndex : a.suraIndex - b.suraIndex))
     .map(({ suraIndex, ayaIndex }, index) => ({
       index: index + 1,
-      translation: QURAN_TG[suraIndex]?.[ayaIndex] || '',
-      suraName: SURE_NAMES[suraIndex]?.[0] || `سوره ${suraIndex + 1}`
+      translation: translation[suraIndex]?.[ayaIndex] || '',
+      suraName: suraNames[suraIndex]?.[0] || `سوره ${suraIndex + 1}`
     }));
 }
 
@@ -183,7 +256,7 @@ function attachSearchHandler() {
   const resultContainer = document.getElementById('results');
   const searchButton = document.getElementById('search-button');
 
-  function handleSearch(event) {
+  async function handleSearch(event) {
     event?.preventDefault?.();
     const query = normalizeQuery(searchInput.value);
 
@@ -192,13 +265,20 @@ function attachSearchHandler() {
       return;
     }
 
-    resultContainer.textContent = 'در حال جست‌وجو...';
+    resultContainer.textContent = 'در حال آماده‌سازی و جست‌وجو...';
 
-    requestAnimationFrame(() => {
-      const matches = searchAyat(query);
-      clearResults(resultContainer);
-      renderResults(resultContainer, matches);
-    });
+    try {
+      const { translation, sureNames } = await loadTranslationResources();
+
+      requestAnimationFrame(() => {
+        const matches = searchAyat(query, translation, sureNames);
+        clearResults(resultContainer);
+        renderResults(resultContainer, matches);
+      });
+    } catch (error) {
+      console.error(error);
+      resultContainer.textContent = 'خطا در بارگذاری داده‌ها. لطفاً دوباره تلاش کنید.';
+    }
   }
 
   const debouncedHandleSearch = debounce(handleSearch, 250);
