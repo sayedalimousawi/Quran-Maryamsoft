@@ -5,6 +5,8 @@ const SURE_NAMES = parseQuranText(typeof SureText === 'string' ? SureText : '');
 const ARABIC_DIACRITICS = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u200c]/g;
 const normalizedQueryCache = new Map();
 
+const MAX_RENDERED_RESULTS = 200;
+
 const QURAN_NORMALIZED = normalizeQuranText(QURAN);
 const QURAN_TG_NORMALIZED = normalizeQuranText(QURAN_TG);
 
@@ -45,30 +47,49 @@ function normalizeText(value) {
     .replace(/ک/g, 'ك');
 }
 
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function clearResults(container) {
   container.textContent = '';
 }
 
 function renderResults(container, matches) {
-  const fragment = document.createDocumentFragment();
-  const table = document.createElement('table');
-  table.style.tableLayout = 'fixed';
-  table.style.width = '100%';
-  table.style.fontSize = '24pt';
-  table.style.fontFamily = '"wm_Naskh Qurani 93"';
+  const renderCount = Math.min(matches.length, MAX_RENDERED_RESULTS);
+  const hiddenCount = matches.length - renderCount;
 
-  matches.forEach(({ index, translation, suraName }) => {
-    const row = document.createElement('tr');
-    row.style.backgroundColor = index % 2 === 0 ? '#E0E0E0' : '#F0F0F0';
+  const rowsHtml = matches.slice(0, renderCount).map(({ index, translation, suraName }) => {
+    const backgroundColor = index % 2 === 0 ? '#E0E0E0' : '#F0F0F0';
+    const content = escapeHtml(`${index}- ${translation} <${suraName}>`);
+    return `<tr style="background-color:${backgroundColor}"><td>${content}</td></tr>`;
+  }).join('');
 
-    const cell = document.createElement('td');
-    cell.textContent = `${index}- ${translation} <${suraName}>`;
-    row.appendChild(cell);
-    table.appendChild(row);
+  requestAnimationFrame(() => {
+    const fragment = document.createDocumentFragment();
+    const table = document.createElement('table');
+    table.style.tableLayout = 'fixed';
+    table.style.width = '100%';
+    table.style.fontSize = '24pt';
+    table.style.fontFamily = '"wm_Naskh Qurani 93"';
+
+    table.innerHTML = rowsHtml;
+    fragment.appendChild(table);
+
+    if (hiddenCount > 0) {
+      const hiddenMessage = document.createElement('div');
+      hiddenMessage.style.marginTop = '8px';
+      hiddenMessage.textContent = `بقیه مخفی شده‌اند (${hiddenCount} نتیجه دیگر).`;
+      fragment.appendChild(hiddenMessage);
+    }
+
+    container.appendChild(fragment);
   });
-
-  fragment.appendChild(table);
-  container.appendChild(fragment);
 }
 
 function searchAyat(query) {
