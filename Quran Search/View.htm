@@ -1,180 +1,68 @@
-﻿<html>
-<head>
-<script language="javascript" src="QuranTG.js"></script>
-<script language="javascript" src="Tarjome.js"></script>
-</head>
-<body dir="RTL" style="font-family:Tahoma; font-size:14px; width:100%">
-<select dir="RTL" id="oSureName" onchange="onSureChange()" style="font-family:Tahoma; font-size:20px; width:250px;">
-<option>فاتحه</option>
-<option>بقره</option>
-<option>آل عمران</option>
-<option>نساء</option>
-<option>مائده</option>
-<option>انعام</option>
-<option>اعراف</option>
-<option>انفال</option>
-<option>توبه</option>
-<option>یونس</option>
-<option>هود</option>
-<option>یوسف</option>
-<option>الرعد</option>
-<option>ابراهیم</option>
-<option>حجر</option>
-<option>نحل</option>
-<option>اسراء</option>
-<option>کهف</option>
-<option>مریم</option>
-<option>طه</option>
-<option>انبیاء</option>
-<option>حج</option>
-<option>مؤمنون</option>
-<option>نور</option>
-<option>فرقان</option>
-<option>شعراء</option>
-<option>نمل</option>
-<option>قصص</option>
-<option>عنکبوت</option>
-<option>روم</option>
-<option>لقمان</option>
-<option>سجدة</option>
-<option>احزاب</option>
-<option>سبأ</option>
-<option>فاطر</option>
-<option>یس</option>
-<option>صافات</option>
-<option>ص</option>
-<option>زمر</option>
-<option>غافر</option>
-<option>فصلت</option>
-<option>شوری</option>
-<option>زخرف</option>
-<option>دخان</option>
-<option>جاثیة</option>
-<option>احقاف</option>
-<option>محمد</option>
-<option>فتح</option>
-<option>حجرات</option>
-<option>ق</option>
-<option>ذاریات</option>
-<option>طور</option>
-<option>نجم</option>
-<option>قمر</option>
-<option>الرحمن</option>
-<option>واقعه</option>
-<option>حدید</option>
-<option>مجادله</option>
-<option>حشر</option>
-<option>ممتحنه</option>
-<option>صف</option>
-<option>جمعه</option>
-<option>منافقون</option>
-<option>تغابن</option>
-<option>طلاق</option>
-<option>تحریم</option>
-<option>ملک</option>
-<option>قلم</option>
-<option>حاقه</option>
-<option>معارج</option>
-<option>نوح</option>
-<option>جن</option>
-<option>مزمل</option>
-<option>مدثر</option>
-<option>قیامه</option>
-<option>انسان</option>
-<option>مرسلات</option>
-<option>نبأ</option>
-<option>نازعات</option>
-<option>عبس</option>
-<option>تکویر</option>
-<option>انفطار</option>
-<option>مطففین</option>
-<option>انشقاق</option>
-<option>بروج</option>
-<option>طارق</option>
-<option>اعلی</option>
-<option>غاشیه</option>
-<option>فجر</option>
-<option>بلد</option>
-<option>شمس</option>
-<option>لیل</option>
-<option>ضحی</option>
-<option>انشراح</option>
-<option>تین</option>
-<option>علق</option>
-<option>قدر</option>
-<option>بینه</option>
-<option>زلزال</option>
-<option>عادیات</option>
-<option>قارعة</option>
-<option>تکاثر</option>
-<option>عصر</option>
-<option>همزه</option>
-<option>فیل</option>
-<option>قریش</option>
-<option>ماعون</option>
-<option>کوثر</option>
-<option>کافرون</option>
-<option>نصر</option>
-<option>مسد</option>
-<option>اخلاص</option>
-<option>فلق</option>
-<option>ناس</option>
-</select>
-<select id="oAyeNum" onchange="onAyeChange()" style="font-family:Tahoma; font-size:20px; width:250px;" name="oAyeNum">
-</select>
-<BUTTON onClick="CopySure();" style="width:100px;">کپی سوره</BUTTON>
-<br><br>
-<textarea id="oViewQuran" style="width:100%; height:400px; font-size:32pt; font-family:'wm_Naskh Qurani 93';"></textarea>
-<BUTTON onClick="Copy(oViewQuran.innerText);" style="width:100px;">کپی آیه</BUTTON>
-<textarea id="oViewTarjome" style="width:100%; height:150px; font-size:18pt; font-family:w_Lotus;"></textarea>
-<BUTTON onClick="Copy(oViewTarjome.innerText);" style="width:100px;">Copy Tarjome</BUTTON>
-<script language="javascript">
-//-------------------------------------------------------
-function GenerateData(Text)
-{
-	var sure=Text.split(" + ");
-	for(var i=0;i<sure.length;i++)
-	{
-		var ayat=sure[i].split(" - ");
-		sure[i]=ayat;
-	}
-	return sure;
-}
-//-------------------------------------------------------
-function onSureChange()
-{
-	var is=oSureName.selectedIndex;
-	var count=Quran[is].length
-	oAyeNum.innerHTML="";	
-	for(var i=count;i>=1;--i)
-	{
-		var option=document.createElement('option');
-		option.text=option.value=i;
-		oAyeNum.add(option,0);
-	}
-	oAyeNum.selectedIndex=0;
-	onAyeChange();
-}
-//-------------------------------------------------------
-function onAyeChange()
-{
-	var is=oSureName.selectedIndex;
-	var ia=oAyeNum.selectedIndex;
-	oViewQuran.value=Quran[is][ia];
-	oViewTarjome.value=Tarjome[is][ia];
-}
-//-------------------------------------------------------
-function Copy(Text) 
-{
-	window.clipboardData.setData("Text",Text)
-}
-//-------------------------------------------------------
-function CopySure() 
-{
-	var is=oSureName.selectedIndex;
-	var Text=Quran[is].join(" ");
-	window.clipboardData.setData("Text",Text)
-}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نمایش سوره و ترجمه</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      font-size: 14px;
+      margin: 16px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    select, button {
+      font-family: Tahoma, sans-serif;
+      font-size: 16px;
+      padding: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+    }
+
+    #quran-view {
+      height: 220px;
+      font-size: 32pt;
+      font-family: "wm_Naskh Qurani 93", Tahoma, sans-serif;
+    }
+
+    #translation-view {
+      height: 120px;
+      font-size: 18pt;
+      font-family: w_Lotus, Tahoma, sans-serif;
+    }
+  </style>
+  <script src="QuranTG.js" defer></script>
+  <script src="Tarjome.js" defer></script>
+  <script src="Sure.js" defer></script>
+  <script src="view.js" type="module"></script>
+</head>
+<body>
+  <div class="controls">
+    <label for="sura-select" style="display:none;">نام سوره</label>
+    <select id="sura-select"></select>
+
+    <label for="aya-select" style="display:none;">شماره آیه</label>
+    <select id="aya-select"></select>
+
+    <button id="copy-sura" type="button">کپی سوره</button>
+    <button id="copy-aya" type="button">کپی آیه</button>
+    <button id="copy-translation" type="button">کپی ترجمه</button>
+  </div>
+
+  <textarea id="quran-view" aria-label="متن آیه"></textarea>
+  <textarea id="translation-view" aria-label="ترجمه"></textarea>
+</body>
+</html>
 //-------------------------------------------------------
 var Quran=GenerateData(QuranTextTG);
 var Tarjome=GenerateData(TarjomeText);
