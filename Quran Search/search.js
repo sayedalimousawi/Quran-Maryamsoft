@@ -3,19 +3,46 @@ const QURAN_TG = parseQuranText(typeof QuranTextTG === 'string' ? QuranTextTG : 
 const SURE_NAMES = parseQuranText(typeof SureText === 'string' ? SureText : '');
 
 const ARABIC_DIACRITICS = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u200c]/g;
+const normalizedQueryCache = new Map();
+
+const QURAN_NORMALIZED = normalizeQuranText(QURAN);
+const QURAN_TG_NORMALIZED = normalizeQuranText(QURAN_TG);
 
 function parseQuranText(text) {
   return text.split(' + ').map((sure) => sure.split(' - '));
 }
 
 function normalizeQuery(value) {
-  return removeDiacritics(value.trim())
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return '';
+  }
+
+  const cachedValue = normalizedQueryCache.get(trimmedValue);
+  if (cachedValue !== undefined) {
+    return cachedValue;
+  }
+
+  const normalizedValue = removeDiacritics(trimmedValue)
     .replace(/ي/g, 'ی')
     .replace(/ک/g, 'ك');
+
+  normalizedQueryCache.set(trimmedValue, normalizedValue);
+  return normalizedValue;
 }
 
 function removeDiacritics(value) {
   return value.replace(ARABIC_DIACRITICS, '');
+}
+
+function normalizeQuranText(text) {
+  return text.map((sura) => sura.map(normalizeText));
+}
+
+function normalizeText(value) {
+  return removeDiacritics(value)
+    .replace(/ي/g, 'ی')
+    .replace(/ک/g, 'ك');
 }
 
 function clearResults(container) {
@@ -48,10 +75,9 @@ function searchAyat(query) {
   const matches = [];
   let counter = 1;
 
-  QURAN.forEach((sura, suraIndex) => {
+  QURAN_NORMALIZED.forEach((sura, suraIndex) => {
     sura.forEach((aya, ayaIndex) => {
-      const normalizedAya = removeDiacritics(aya);
-      if (normalizedAya.includes(query)) {
+      if (aya.includes(query)) {
         matches.push({
           index: counter,
           translation: QURAN_TG[suraIndex]?.[ayaIndex] || '',
