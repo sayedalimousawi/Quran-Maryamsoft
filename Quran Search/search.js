@@ -47,6 +47,14 @@ function normalizeText(value) {
     .replace(/ک/g, 'ك');
 }
 
+function debounce(fn, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
 function escapeHtml(value) {
   return value
     .replace(/&/g, '&amp;')
@@ -118,23 +126,31 @@ function attachSearchHandler() {
   const searchButton = document.getElementById('search-button');
 
   function handleSearch(event) {
-    event?.preventDefault();
+    event?.preventDefault?.();
     const query = normalizeQuery(searchInput.value);
-    clearResults(resultContainer);
 
     if (!query) {
+      clearResults(resultContainer);
       return;
     }
 
-    const matches = searchAyat(query);
-    renderResults(resultContainer, matches);
+    resultContainer.textContent = 'در حال جست‌وجو...';
+
+    requestAnimationFrame(() => {
+      const matches = searchAyat(query);
+      clearResults(resultContainer);
+      renderResults(resultContainer, matches);
+    });
   }
 
-  searchButton.addEventListener('click', handleSearch);
+  const debouncedHandleSearch = debounce(handleSearch, 250);
+
+  searchInput.addEventListener('input', debouncedHandleSearch);
+  searchButton.addEventListener('click', debouncedHandleSearch);
   searchInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      handleSearch();
+      debouncedHandleSearch(event);
     }
   });
 }
