@@ -1,150 +1,61 @@
-﻿<html>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-<script language="javascript" src="Quran.js"></script>
-<script language="javascript" src="QuranTG.js"></script>
-<script language="javascript" src="Sure.js"></script>
-</head>
+  <meta charset="UTF-8">
+  <title>جستجوی قرآن</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      font-size: 14px;
+      margin: 16px;
+    }
 
-<body dir="RTL" style="font-family:Tahoma; font-size:14px; width:100%">
-<textarea id="oStrSearch" style="width:800px; height:80px; font-size:32pt; font-family:'wm_Naskh Qurani 93';"></textarea>
-<a href="javascript:SmartSearch()">حستجو</a><br>
-<br>
-<div id="oResult"  style="width:100%; height:450px; overflow: scroll; border: solid 2 #CCCCCC"></div>
-<script language="javascript">
-//---------------------------------------------------------------------------------------------
-mFatheh=Char(1614)
-mKasreh=Char(1616)
-mZameh=Char(1615)
-mFathatan=Char(1611)
-mKasratan=Char(1613)
-mZamatan=Char(1612)
-mTashdid=Char(1617)
-mSaken=Char(1618)
-mZero=Char(1760)
-mMad=Char(1619)
-mTalef=Char(1648)
-mBalef=Char(1622)
-mMim=Char(1762)
-mYeheshba=Char(1767)
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
 
-vqfSala=Char(1750)
-vqfQala=Char(1751)
-vqfJim=Char(1754)
-vqfMim=Char(1752)
-vqfSin=Char(1756)
-vqf3Point=Char(1755)
+    textarea {
+      width: 800px;
+      height: 80px;
+      font-size: 32pt;
+      font-family: "wm_Naskh Qurani 93", Tahoma, sans-serif;
+      padding: 8px;
+      box-sizing: border-box;
+    }
 
-chSpace=Char(32)
-chKashideh=Char(1600)
-chHmz=Char(1569)
-chAlf=Char(1575)
-chYeh_HMZ=Char(1574)
-chAlf_THMZ=Char(1571)
-chAlf_BHMZ=Char(1573)
-chAlf_TVSL=Char(1649)
-chDal=Char(1583)
-chLam=Char(1604)
-chMim=Char(1605)
-chNun=Char(1606)
-chVav=Char(1608)
-chHeh=Char(1607)
-chYeh=Char(1740)
-chYeh_B2P=Char(1610)
-chMaq=Char(1609)
-chYeheshba=Char(1766)
-chVaveshba=Char(1765)
-//-------------------------------------------------------
-function Char(ch)
-{
-	if( ch.toString(16).length==2 ) return unescape("%u00"+ch.toString(16))
-	if( ch.toString(16).length==3 ) return unescape("%u0"+ch.toString(16))
-	return unescape("%u"+ch.toString(16))
-}
-//-------------------------------------------------------
-function Strip(str,chars)
-{
-	newstr=""
-	for(i=0;i<str.length;i++)
-	{
-		if(chars.indexOf(str.charAt(i))==-1) newstr+=str.charAt(i)
-	}
-	return newstr
-}
-//-------------------------------------------------------
-function GenerateData(Text)
-{
-	var sure=Text.split(" + ");
-	for(var i=0;i<sure.length;i++)
-	{
-		var ayat=sure[i].split(" - ");
-		sure[i]=ayat;
-		/*for(var j=0;j<ayat.length;j++)
-		{
+    button {
+      font-size: 16px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
 
-			var aye=ayat[j].split(" ");
-			aye=aye.slice(0,aye.length);
-			aye=aye.join(" ");
-			ayat[j]=aye+" "+"سوره ی شماره ی:"+(i+1);
-		}*/
-	}
-	return sure;
-}
-//-------------------------------------------------------
-function ReplaceAll(str,strFind,strReplace)
-{
-	re=new RegExp(strFind,"g")
-	return str.replace(re,strReplace)	
-}
-//-------------------------------------------------------
-function RemoveMarks(str)
-{
-	var erab=mFatheh+mKasreh+mZameh+mFathatan+mKasratan+mZamatan+mTashdid+mSaken+mZero+mMad+mTalef+mBalef+mMim+mYeheshba+vqfSala+vqfQala+vqfJim+vqfMim+vqfSin+vqf3Point;
-	for(var i=0;i<erab.length;i++)
-	{
-		str=ReplaceAll(str,erab.charAt(i),"");	
-	}
-	return str;
-}
-//-------------------------------------------------------
-function RemoveChars(str)
-{
-	var C=ccA+ccK+ccX+ccNX+ccY+ccNY+ccTMX+ccTMNX+ccTMY+ccTMNY+ccBMX+ccBMNX+ccBMY+ccBMNY+ccZWNJ+pT1P+pT2P+pT3P+pB1P+pB2P+pB3P+pTAA+pTVSL+pTHMZ+pBHMZ+mFatheh+mKasreh+mZameh+mFathatan+mKasratan+mZamatan+mTashdid+mSaken+mZero+mMad+mTalef+mBalef+mMim+mYeheshba+vqfSala+vqfQala+vqfJim+vqfMim+vqfSin+vqf3Point;
-	for(var i=0;i<C.length;i++)
-	{
-		str=ReplaceAll(str,C.charAt(i),"");	
-	}
-	return str;
-}
-//-------------------------------------------------------
-function SmartSearch()
-{
-	var sFind=RemoveMarks(oStrSearch.value);
-	sFind=ReplaceAll(sFind,"ي","ی"); // yeh Farsi	
-	sFind=ReplaceAll(sFind,"ک","ك"); // Kaf Arab
-	count=0
-	var strHTML = "<table width=100% style=\"table-layout:fixed ;font-size:24pt; font-family:'wm_Naskh Qurani 93';\">";
-	for(var i=0;i<Quran.length;i++)
-	{
-		for(var j=0;j<Quran[i].length;j++)
-		{
-			var strAye=RemoveMarks(Quran[i][j]);
-			if( strAye.indexOf(sFind)!=-1 )
-			{
-				count++;
-				var color="#F0F0F0";
-				if(count%2) color="#E0E0E0";
-				strHTML+= "<tr style='background-color:"+color+";'><td>" + count + "- "+QuranTG[i][j]+" <"+Sure[i]+"></td></tr>";
-			}
-		}			
-	}
-	oResult.innerHTML = strHTML;
-}
-//-------------------------------------------------------
-var Quran=GenerateData(QuranText);
-var QuranTG=GenerateData(QuranTextTG);
-var Sure=GenerateData(SureText);
-
-</script>
-</body>
+    #results {
+      width: 100%;
+      height: 450px;
+      overflow: auto;
+      border: 2px solid #CCCCCC;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+  </style>
+  <script src="Quran.js" defer></script>
+  <script src="QuranTG.js" defer></script>
+  <script src="Sure.js" defer></script>
+  <script src="search.js" type="module"></script>
+</head>
+<body>
+  <header>
+    <label for="search-input" style="display:none;">متن جستجو</label>
+    <textarea id="search-input" placeholder="عبارت مورد نظر را وارد کنید..."></textarea>
+    <button id="search-button" type="button">جستجو</button>
+  </header>
+  <div id="results" aria-live="polite"></div>
+</body>
+</html>
+</body>
 </html>
 
