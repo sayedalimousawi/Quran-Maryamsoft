@@ -9,6 +9,7 @@ const MAX_RENDERED_RESULTS = 200;
 
 const QURAN_NORMALIZED = normalizeQuranText(QURAN);
 const QURAN_TG_NORMALIZED = normalizeQuranText(QURAN_TG);
+const INVERTED_INDEX = buildInvertedIndex(QURAN_NORMALIZED);
 
 function parseQuranText(text) {
   return text.split(' + ').map((sure) => sure.split(' - '));
@@ -45,6 +46,36 @@ function normalizeText(value) {
   return removeDiacritics(value)
     .replace(/ي/g, 'ی')
     .replace(/ک/g, 'ك');
+}
+
+function buildInvertedIndex(text) {
+  const index = new Map();
+
+  text.forEach((sura, suraIndex) => {
+    sura.forEach((aya, ayaIndex) => {
+      const tokens = new Set(tokenize(aya));
+
+      tokens.forEach((token) => {
+        const references = index.get(token);
+        const currentReference = { suraIndex, ayaIndex };
+
+        if (references) {
+          references.push(currentReference);
+        } else {
+          index.set(token, [currentReference]);
+        }
+      });
+    });
+  });
+
+  return index;
+}
+
+function tokenize(value) {
+  return value
+    .split(/[\s.,،؛؟!\-\/]+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
 }
 
 function debounce(fn, delay) {
@@ -101,23 +132,50 @@ function renderResults(container, matches) {
 }
 
 function searchAyat(query) {
-  const matches = [];
-  let counter = 1;
+  const tokens = tokenize(query);
 
-  QURAN_NORMALIZED.forEach((sura, suraIndex) => {
-    sura.forEach((aya, ayaIndex) => {
-      if (aya.includes(query)) {
-        matches.push({
-          index: counter,
-          translation: QURAN_TG[suraIndex]?.[ayaIndex] || '',
-          suraName: SURE_NAMES[suraIndex]?.[0] || `سوره ${suraIndex + 1}`
-        });
-        counter += 1;
+  if (!tokens.length) {
+    return [];
+  }
+
+  const references = tokens.length === 1
+    ? (INVERTED_INDEX.get(tokens[0]) || [])
+    : intersectReferences(tokens.map((token) => INVERTED_INDEX.get(token) || []));
+
+  return references
+    .sort((a, b) => (a.suraIndex === b.suraIndex ? a.ayaIndex - b.ayaIndex : a.suraIndex - b.suraIndex))
+    .map(({ suraIndex, ayaIndex }, index) => ({
+      index: index + 1,
+      translation: QURAN_TG[suraIndex]?.[ayaIndex] || '',
+      suraName: SURE_NAMES[suraIndex]?.[0] || `سوره ${suraIndex + 1}`
+    }));
+}
+
+function intersectReferences(referenceLists) {
+  if (!referenceLists.length || referenceLists.some((list) => list.length === 0)) {
+    return [];
+  }
+
+  const sortedLists = [...referenceLists].sort((a, b) => a.length - b.length);
+  const initialKeys = new Set(sortedLists[0].map(referenceKey));
+
+  sortedLists.slice(1).forEach((list) => {
+    const listKeys = new Set(list.map(referenceKey));
+    initialKeys.forEach((key) => {
+      if (!listKeys.has(key)) {
+        initialKeys.delete(key);
       }
     });
   });
 
-  return matches;
+  return Array.from(initialKeys).map((key) => {
+    const [suraIndex, ayaIndex] = key.split('-').map(Number);
+    return { suraIndex, ayaIndex };
+  });
+}
+
+function referenceKey(reference) {
+  return `${reference.suraIndex}-${reference.ayaIndex}`;
 }
 
 function attachSearchHandler() {
