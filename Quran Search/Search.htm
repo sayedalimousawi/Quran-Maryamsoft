@@ -1,150 +1,356 @@
-﻿<html>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-<script language="javascript" src="Quran.js"></script>
-<script language="javascript" src="QuranTG.js"></script>
-<script language="javascript" src="Sure.js"></script>
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جستجوی قرآن</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script language="javascript" src="Quran.js"></script>
+  <script language="javascript" src="QuranTG.js"></script>
+  <script language="javascript" src="Sure.js"></script>
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #0f172a, #111827);
+      --card: #0b1222;
+      --accent: #16a34a;
+      --muted: #9ca3af;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f3f4f6;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+    }
 
-<body dir="RTL" style="font-family:Tahoma; font-size:14px; width:100%">
-<textarea id="oStrSearch" style="width:800px; height:80px; font-size:32pt; font-family:'wm_Naskh Qurani 93';"></textarea>
-<a href="javascript:SmartSearch()">حستجو</a><br>
-<br>
-<div id="oResult"  style="width:100%; height:450px; overflow: scroll; border: solid 2 #CCCCCC"></div>
-<script language="javascript">
-//---------------------------------------------------------------------------------------------
-mFatheh=Char(1614)
-mKasreh=Char(1616)
-mZameh=Char(1615)
-mFathatan=Char(1611)
-mKasratan=Char(1613)
-mZamatan=Char(1612)
-mTashdid=Char(1617)
-mSaken=Char(1618)
-mZero=Char(1760)
-mMad=Char(1619)
-mTalef=Char(1648)
-mBalef=Char(1622)
-mMim=Char(1762)
-mYeheshba=Char(1767)
+    * { box-sizing: border-box; }
 
-vqfSala=Char(1750)
-vqfQala=Char(1751)
-vqfJim=Char(1754)
-vqfMim=Char(1752)
-vqfSin=Char(1756)
-vqf3Point=Char(1755)
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 48px;
+    }
 
-chSpace=Char(32)
-chKashideh=Char(1600)
-chHmz=Char(1569)
-chAlf=Char(1575)
-chYeh_HMZ=Char(1574)
-chAlf_THMZ=Char(1571)
-chAlf_BHMZ=Char(1573)
-chAlf_TVSL=Char(1649)
-chDal=Char(1583)
-chLam=Char(1604)
-chMim=Char(1605)
-chNun=Char(1606)
-chVav=Char(1608)
-chHeh=Char(1607)
-chYeh=Char(1740)
-chYeh_B2P=Char(1610)
-chMaq=Char(1609)
-chYeheshba=Char(1766)
-chVaveshba=Char(1765)
-//-------------------------------------------------------
-function Char(ch)
-{
-	if( ch.toString(16).length==2 ) return unescape("%u00"+ch.toString(16))
-	if( ch.toString(16).length==3 ) return unescape("%u0"+ch.toString(16))
-	return unescape("%u"+ch.toString(16))
-}
-//-------------------------------------------------------
-function Strip(str,chars)
-{
-	newstr=""
-	for(i=0;i<str.length;i++)
-	{
-		if(chars.indexOf(str.charAt(i))==-1) newstr+=str.charAt(i)
-	}
-	return newstr
-}
-//-------------------------------------------------------
-function GenerateData(Text)
-{
-	var sure=Text.split(" + ");
-	for(var i=0;i<sure.length;i++)
-	{
-		var ayat=sure[i].split(" - ");
-		sure[i]=ayat;
-		/*for(var j=0;j<ayat.length;j++)
-		{
+    .page {
+      width: min(1100px, 100%);
+      display: grid;
+      gap: 20px;
+    }
 
-			var aye=ayat[j].split(" ");
-			aye=aye.slice(0,aye.length);
-			aye=aye.join(" ");
-			ayat[j]=aye+" "+"سوره ی شماره ی:"+(i+1);
-		}*/
-	}
-	return sure;
-}
-//-------------------------------------------------------
-function ReplaceAll(str,strFind,strReplace)
-{
-	re=new RegExp(strFind,"g")
-	return str.replace(re,strReplace)	
-}
-//-------------------------------------------------------
-function RemoveMarks(str)
-{
-	var erab=mFatheh+mKasreh+mZameh+mFathatan+mKasratan+mZamatan+mTashdid+mSaken+mZero+mMad+mTalef+mBalef+mMim+mYeheshba+vqfSala+vqfQala+vqfJim+vqfMim+vqfSin+vqf3Point;
-	for(var i=0;i<erab.length;i++)
-	{
-		str=ReplaceAll(str,erab.charAt(i),"");	
-	}
-	return str;
-}
-//-------------------------------------------------------
-function RemoveChars(str)
-{
-	var C=ccA+ccK+ccX+ccNX+ccY+ccNY+ccTMX+ccTMNX+ccTMY+ccTMNY+ccBMX+ccBMNX+ccBMY+ccBMNY+ccZWNJ+pT1P+pT2P+pT3P+pB1P+pB2P+pB3P+pTAA+pTVSL+pTHMZ+pBHMZ+mFatheh+mKasreh+mZameh+mFathatan+mKasratan+mZamatan+mTashdid+mSaken+mZero+mMad+mTalef+mBalef+mMim+mYeheshba+vqfSala+vqfQala+vqfJim+vqfMim+vqfSin+vqf3Point;
-	for(var i=0;i<C.length;i++)
-	{
-		str=ReplaceAll(str,C.charAt(i),"");	
-	}
-	return str;
-}
-//-------------------------------------------------------
-function SmartSearch()
-{
-	var sFind=RemoveMarks(oStrSearch.value);
-	sFind=ReplaceAll(sFind,"ي","ی"); // yeh Farsi	
-	sFind=ReplaceAll(sFind,"ک","ك"); // Kaf Arab
-	count=0
-	var strHTML = "<table width=100% style=\"table-layout:fixed ;font-size:24pt; font-family:'wm_Naskh Qurani 93';\">";
-	for(var i=0;i<Quran.length;i++)
-	{
-		for(var j=0;j<Quran[i].length;j++)
-		{
-			var strAye=RemoveMarks(Quran[i][j]);
-			if( strAye.indexOf(sFind)!=-1 )
-			{
-				count++;
-				var color="#F0F0F0";
-				if(count%2) color="#E0E0E0";
-				strHTML+= "<tr style='background-color:"+color+";'><td>" + count + "- "+QuranTG[i][j]+" <"+Sure[i]+"></td></tr>";
-			}
-		}			
-	}
-	oResult.innerHTML = strHTML;
-}
-//-------------------------------------------------------
-var Quran=GenerateData(QuranText);
-var QuranTG=GenerateData(QuranTextTG);
-var Sure=GenerateData(SureText);
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-</script>
-</body>
+    .title {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    label { display: block; font-weight: 600; margin-bottom: 10px; }
+
+    textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text);
+      padding: 16px;
+      font-size: 20px;
+      resize: vertical;
+      font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: rgba(22, 163, 74, 0.6);
+      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      color: #0a0f1e;
+      font-weight: 700;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 12px 25px -12px rgba(34, 197, 94, 0.65);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    button:active { transform: translateY(0); box-shadow: 0 8px 18px -10px rgba(34, 197, 94, 0.55); }
+
+    .status {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .results {
+      display: grid;
+      gap: 12px;
+      max-height: 520px;
+      overflow: auto;
+      padding: 6px 2px;
+    }
+
+    .result-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(22, 163, 74, 0.16);
+      color: #4ade80;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .ayah { margin: 0; font-size: 24px; line-height: 1.8; font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif; }
+    .meta { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .highlight {
+      background: rgba(74, 222, 128, 0.16);
+      border-bottom: 2px solid rgba(34, 197, 94, 0.9);
+      padding: 1px 4px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 20px 12px 32px; }
+      .title { font-size: 26px; }
+      textarea { font-size: 18px; }
+      .ayah { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <p class="title">جستجوی هوشمند قرآن</p>
+      <p class="subtitle">عبارت یا واژه مورد نظر خود را بنویسید تا آیات مرتبط در کم‌ترین زمان نمایش داده شود.</p>
+    </header>
+
+    <section class="card">
+      <label for="oStrSearch">عبارت مورد جستجو</label>
+      <textarea id="oStrSearch" rows="3" placeholder="مثال: الرحمن الرحیم" aria-label="عبارت مورد جستجو"></textarea>
+      <div class="actions">
+        <button type="button" onclick="SmartSearch()" aria-label="جستجو">
+          <span>🔍</span>
+          <span>جستجو</span>
+        </button>
+        <span id="resultMeta" class="status">برای شروع، عبارت خود را وارد کنید.</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="results" id="oResult" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script language="javascript">
+  //---------------------------------------------------------------------------------------------
+  mFatheh=Char(1614)
+  mKasreh=Char(1616)
+  mZameh=Char(1615)
+  mFathatan=Char(1611)
+  mKasratan=Char(1613)
+  mZamatan=Char(1612)
+  mTashdid=Char(1617)
+  mSaken=Char(1618)
+  mZero=Char(1760)
+  mMad=Char(1619)
+  mTalef=Char(1648)
+  mBalef=Char(1622)
+  mMim=Char(1762)
+  mYeheshba=Char(1767)
+
+  vqfSala=Char(1750)
+  vqfQala=Char(1751)
+  vqfJim=Char(1754)
+  vqfMim=Char(1752)
+  vqfSin=Char(1756)
+  vqf3Point=Char(1755)
+
+  chSpace=Char(32)
+  chKashideh=Char(1600)
+  chHmz=Char(1569)
+  chAlf=Char(1575)
+  chYeh_HMZ=Char(1574)
+  chAlf_THMZ=Char(1571)
+  chAlf_BHMZ=Char(1573)
+  chAlf_TVSL=Char(1649)
+  chDal=Char(1583)
+  chLam=Char(1604)
+  chMim=Char(1605)
+  chNun=Char(1606)
+  chVav=Char(1608)
+  chHeh=Char(1607)
+  chYeh=Char(1740)
+  chYeh_B2P=Char(1610)
+  chMaq=Char(1609)
+  chYeheshba=Char(1766)
+  chVaveshba=Char(1765)
+  //-------------------------------------------------------
+  function Char(ch)
+  {
+          if( ch.toString(16).length==2 ) return unescape("%u00"+ch.toString(16))
+          if( ch.toString(16).length==3 ) return unescape("%u0"+ch.toString(16))
+          return unescape("%u"+ch.toString(16))
+  }
+  //-------------------------------------------------------
+  function Strip(str,chars)
+  {
+          newstr=""
+          for(i=0;i<str.length;i++)
+          {
+                  if(chars.indexOf(str.charAt(i))==-1) newstr+=str.charAt(i)
+          }
+          return newstr
+  }
+  //-------------------------------------------------------
+  function GenerateData(Text)
+  {
+          var sure=Text.split(" + ");
+          for(var i=0;i<sure.length;i++)
+          {
+                  var ayat=sure[i].split(" - ");
+                  sure[i]=ayat;
+          }
+          return sure;
+  }
+  //-------------------------------------------------------
+  function ReplaceAll(str,strFind,strReplace)
+  {
+          re=new RegExp(strFind,"g")
+          return str.replace(re,strReplace)
+  }
+  //-------------------------------------------------------
+  function RemoveMarks(str)
+  {
+          var erab=mFatheh+mKasreh+mZameh+mFathatan+mKasratan+mZamatan+mTashdid+mSaken+mZero+mMad+mTalef+mBalef+mMim+mYeheshba+vqfSala+vqfQala+vqfJim+vqfMim+vqfSin+vqf3Point;
+          for(var i=0;i<erab.length;i++)
+          {
+                  str=ReplaceAll(str,erab.charAt(i),"");
+          }
+          return str;
+  }
+  //-------------------------------------------------------
+  function RemoveChars(str)
+  {
+          var C=ccA+ccK+ccX+ccNX+ccY+ccNY+ccTMX+ccTMNX+ccTMY+ccTMNY+ccBMX+ccBMNX+ccBMY+ccBMNY+ccZWNJ+pT1P+pT2P+pT3P+pB1P+pB2P+pB3P+pTAA+pTVSL+pTHMZ+pBHMZ+mFatheh+mKasreh+mZameh+mFathatan+mKasratan+mZamatan+mTashdid+mSaken+mZero+mMad+mTalef+mBalef+mMim+mYeheshba+vqfSala+vqfQala+vqfJim+vqfMim+vqfSin+vqf3Point;
+          for(var i=0;i<C.length;i++)
+          {
+                  str=ReplaceAll(str,C.charAt(i),"");
+          }
+          return str;
+  }
+  //-------------------------------------------------------
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  //-------------------------------------------------------
+  function highlightMatch(text, query) {
+    if (!query) return text;
+    try {
+      var regex = new RegExp(escapeRegExp(query), 'gi');
+      return text.replace(regex, function(match) {
+        return '<span class="highlight">' + match + '</span>';
+      });
+    } catch (e) {
+      return text;
+    }
+  }
+  //-------------------------------------------------------
+  function SmartSearch()
+  {
+          var inputValue=oStrSearch.value.trim();
+          if(!inputValue){
+            oResult.innerHTML="";
+            document.getElementById('resultMeta').innerText='برای شروع، عبارت خود را وارد کنید.';
+            return;
+          }
+          var sFind=RemoveMarks(inputValue);
+          sFind=ReplaceAll(sFind,"ي","ی"); // yeh Farsi
+          sFind=ReplaceAll(sFind,"ک","ك"); // Kaf Arab
+          count=0
+          var fragments=[];
+          for(var i=0;i<Quran.length;i++)
+          {
+                  for(var j=0;j<Quran[i].length;j++)
+                  {
+                          var strAye=RemoveMarks(Quran[i][j]);
+                          if( strAye.indexOf(sFind)!=-1 )
+                          {
+                                  count++;
+                                  var ayahHighlighted=highlightMatch(QuranTG[i][j], sFind);
+                                  fragments.push(
+                                    "<article class='result-card'><div class='badge'>"+count+
+                                    "</div><p class='ayah'>"+ayahHighlighted+"</p><p class='meta'>سوره " + Sure[i] + " — آیه " + (j+1) + "</p></article>"
+                                  );
+                          }
+                  }
+          }
+          oResult.innerHTML = fragments.join('');
+          var meta=document.getElementById('resultMeta');
+          if(count===0){
+            meta.innerText='موردی یافت نشد. لطفاً کلمه دیگری را امتحان کنید.';
+          } else {
+            meta.innerText=''+count+' نتیجه پیدا شد.';
+          }
+  }
+  //-------------------------------------------------------
+  var Quran=GenerateData(QuranText);
+  var QuranTG=GenerateData(QuranTextTG);
+  var Sure=GenerateData(SureText);
+
+  </script>
+</body>
+</html>
+</body>
 </html>
 
