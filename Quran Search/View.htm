@@ -1,180 +1,334 @@
-﻿<html>
-<head>
-<script language="javascript" src="QuranTG.js"></script>
-<script language="javascript" src="Tarjome.js"></script>
-</head>
-<body dir="RTL" style="font-family:Tahoma; font-size:14px; width:100%">
-<select dir="RTL" id="oSureName" onchange="onSureChange()" style="font-family:Tahoma; font-size:20px; width:250px;">
-<option>فاتحه</option>
-<option>بقره</option>
-<option>آل عمران</option>
-<option>نساء</option>
-<option>مائده</option>
-<option>انعام</option>
-<option>اعراف</option>
-<option>انفال</option>
-<option>توبه</option>
-<option>یونس</option>
-<option>هود</option>
-<option>یوسف</option>
-<option>الرعد</option>
-<option>ابراهیم</option>
-<option>حجر</option>
-<option>نحل</option>
-<option>اسراء</option>
-<option>کهف</option>
-<option>مریم</option>
-<option>طه</option>
-<option>انبیاء</option>
-<option>حج</option>
-<option>مؤمنون</option>
-<option>نور</option>
-<option>فرقان</option>
-<option>شعراء</option>
-<option>نمل</option>
-<option>قصص</option>
-<option>عنکبوت</option>
-<option>روم</option>
-<option>لقمان</option>
-<option>سجدة</option>
-<option>احزاب</option>
-<option>سبأ</option>
-<option>فاطر</option>
-<option>یس</option>
-<option>صافات</option>
-<option>ص</option>
-<option>زمر</option>
-<option>غافر</option>
-<option>فصلت</option>
-<option>شوری</option>
-<option>زخرف</option>
-<option>دخان</option>
-<option>جاثیة</option>
-<option>احقاف</option>
-<option>محمد</option>
-<option>فتح</option>
-<option>حجرات</option>
-<option>ق</option>
-<option>ذاریات</option>
-<option>طور</option>
-<option>نجم</option>
-<option>قمر</option>
-<option>الرحمن</option>
-<option>واقعه</option>
-<option>حدید</option>
-<option>مجادله</option>
-<option>حشر</option>
-<option>ممتحنه</option>
-<option>صف</option>
-<option>جمعه</option>
-<option>منافقون</option>
-<option>تغابن</option>
-<option>طلاق</option>
-<option>تحریم</option>
-<option>ملک</option>
-<option>قلم</option>
-<option>حاقه</option>
-<option>معارج</option>
-<option>نوح</option>
-<option>جن</option>
-<option>مزمل</option>
-<option>مدثر</option>
-<option>قیامه</option>
-<option>انسان</option>
-<option>مرسلات</option>
-<option>نبأ</option>
-<option>نازعات</option>
-<option>عبس</option>
-<option>تکویر</option>
-<option>انفطار</option>
-<option>مطففین</option>
-<option>انشقاق</option>
-<option>بروج</option>
-<option>طارق</option>
-<option>اعلی</option>
-<option>غاشیه</option>
-<option>فجر</option>
-<option>بلد</option>
-<option>شمس</option>
-<option>لیل</option>
-<option>ضحی</option>
-<option>انشراح</option>
-<option>تین</option>
-<option>علق</option>
-<option>قدر</option>
-<option>بینه</option>
-<option>زلزال</option>
-<option>عادیات</option>
-<option>قارعة</option>
-<option>تکاثر</option>
-<option>عصر</option>
-<option>همزه</option>
-<option>فیل</option>
-<option>قریش</option>
-<option>ماعون</option>
-<option>کوثر</option>
-<option>کافرون</option>
-<option>نصر</option>
-<option>مسد</option>
-<option>اخلاص</option>
-<option>فلق</option>
-<option>ناس</option>
-</select>
-<select id="oAyeNum" onchange="onAyeChange()" style="font-family:Tahoma; font-size:20px; width:250px;" name="oAyeNum">
-</select>
-<BUTTON onClick="CopySure();" style="width:100px;">کپی سوره</BUTTON>
-<br><br>
-<textarea id="oViewQuran" style="width:100%; height:400px; font-size:32pt; font-family:'wm_Naskh Qurani 93';"></textarea>
-<BUTTON onClick="Copy(oViewQuran.innerText);" style="width:100px;">کپی آیه</BUTTON>
-<textarea id="oViewTarjome" style="width:100%; height:150px; font-size:18pt; font-family:w_Lotus;"></textarea>
-<BUTTON onClick="Copy(oViewTarjome.innerText);" style="width:100px;">Copy Tarjome</BUTTON>
-<script language="javascript">
-//-------------------------------------------------------
-function GenerateData(Text)
-{
-	var sure=Text.split(" + ");
-	for(var i=0;i<sure.length;i++)
-	{
-		var ayat=sure[i].split(" - ");
-		sure[i]=ayat;
-	}
-	return sure;
-}
-//-------------------------------------------------------
-function onSureChange()
-{
-	var is=oSureName.selectedIndex;
-	var count=Quran[is].length
-	oAyeNum.innerHTML="";	
-	for(var i=count;i>=1;--i)
-	{
-		var option=document.createElement('option');
-		option.text=option.value=i;
-		oAyeNum.add(option,0);
-	}
-	oAyeNum.selectedIndex=0;
-	onAyeChange();
-}
-//-------------------------------------------------------
-function onAyeChange()
-{
-	var is=oSureName.selectedIndex;
-	var ia=oAyeNum.selectedIndex;
-	oViewQuran.value=Quran[is][ia];
-	oViewTarjome.value=Tarjome[is][ia];
-}
-//-------------------------------------------------------
-function Copy(Text) 
-{
-	window.clipboardData.setData("Text",Text)
-}
-//-------------------------------------------------------
-function CopySure() 
-{
-	var is=oSureName.selectedIndex;
-	var Text=Quran[is].join(" ");
-	window.clipboardData.setData("Text",Text)
-}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تلاوت و ترجمه قرآن</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script language="javascript" src="QuranTG.js"></script>
+  <script language="javascript" src="Tarjome.js"></script>
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #0f172a, #111827);
+      --card: #0b1222;
+      --muted: #9ca3af;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e5e7eb;
+      --accent: #22c55e;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px 48px;
+    }
+
+    .page {
+      width: min(1100px, 100%);
+      display: grid;
+      gap: 20px;
+    }
+
+    header { display: grid; gap: 6px; }
+    .title { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -0.4px; }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 16px;
+    }
+
+    .controls { display: grid; gap: 12px; }
+    .control-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    label { font-weight: 600; display: block; margin-bottom: 6px; }
+
+    select, textarea, .pill-button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus, textarea:focus { outline: none; border-color: rgba(34, 197, 94, 0.6); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2); }
+
+    .pill-button {
+      width: auto;
+      cursor: pointer;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      color: #0a0f1e;
+      font-weight: 700;
+      box-shadow: 0 12px 25px -12px rgba(34, 197, 94, 0.65);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .textarea {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      padding: 14px;
+      font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif;
+      font-size: 26px;
+      line-height: 1.7;
+      min-height: 240px;
+      resize: vertical;
+    }
+
+    .translation { font-family: 'Vazirmatn', 'Tahoma', sans-serif; font-size: 18px; line-height: 1.8; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 14px; }
+    .badge { padding: 8px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border); }
+
+    @media (max-width: 768px) {
+      body { padding: 20px 12px 32px; }
+      .title { font-size: 24px; }
+      .control-row { flex-direction: column; }
+      .pill-button { width: 100%; justify-content: center; }
+      .textarea { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <p class="title">تلاوت و ترجمه</p>
+      <p class="subtitle">سوره و آیه دلخواه خود را انتخاب کرده و متن عربی و ترجمه فارسی را در یک محیط خلوت و خوانا ببینید.</p>
+    </header>
+
+    <section class="card">
+      <div class="controls">
+        <div class="control-row">
+          <div style="flex:1; min-width: 220px;">
+            <label for="oSureName">انتخاب سوره</label>
+            <select dir="RTL" id="oSureName" onchange="onSureChange()" aria-label="انتخاب سوره">
+              <option>فاتحه</option>
+              <option>بقره</option>
+              <option>آل عمران</option>
+              <option>نساء</option>
+              <option>مائده</option>
+              <option>انعام</option>
+              <option>اعراف</option>
+              <option>انفال</option>
+              <option>توبه</option>
+              <option>یونس</option>
+              <option>هود</option>
+              <option>یوسف</option>
+              <option>الرعد</option>
+              <option>ابراهیم</option>
+              <option>حجر</option>
+              <option>نحل</option>
+              <option>اسراء</option>
+              <option>کهف</option>
+              <option>مریم</option>
+              <option>طه</option>
+              <option>انبیاء</option>
+              <option>حج</option>
+              <option>مؤمنون</option>
+              <option>نور</option>
+              <option>فرقان</option>
+              <option>شعراء</option>
+              <option>نمل</option>
+              <option>قصص</option>
+              <option>عنکبوت</option>
+              <option>روم</option>
+              <option>لقمان</option>
+              <option>سجدة</option>
+              <option>احزاب</option>
+              <option>سبأ</option>
+              <option>فاطر</option>
+              <option>یس</option>
+              <option>صافات</option>
+              <option>ص</option>
+              <option>زمر</option>
+              <option>غافر</option>
+              <option>فصلت</option>
+              <option>شوری</option>
+              <option>زخرف</option>
+              <option>دخان</option>
+              <option>جاثیة</option>
+              <option>احقاف</option>
+              <option>محمد</option>
+              <option>فتح</option>
+              <option>حجرات</option>
+              <option>ق</option>
+              <option>ذاریات</option>
+              <option>طور</option>
+              <option>نجم</option>
+              <option>قمر</option>
+              <option>الرحمن</option>
+              <option>واقعه</option>
+              <option>حدید</option>
+              <option>مجادله</option>
+              <option>حشر</option>
+              <option>ممتحنه</option>
+              <option>صف</option>
+              <option>جمعه</option>
+              <option>منافقون</option>
+              <option>تغابن</option>
+              <option>طلاق</option>
+              <option>تحریم</option>
+              <option>ملک</option>
+              <option>قلم</option>
+              <option>حاقه</option>
+              <option>معارج</option>
+              <option>نوح</option>
+              <option>جن</option>
+              <option>مزمل</option>
+              <option>مدثر</option>
+              <option>قیامه</option>
+              <option>انسان</option>
+              <option>مرسلات</option>
+              <option>نبأ</option>
+              <option>نازعات</option>
+              <option>عبس</option>
+              <option>تکویر</option>
+              <option>انفطار</option>
+              <option>مطففین</option>
+              <option>انشقاق</option>
+              <option>بروج</option>
+              <option>طارق</option>
+              <option>اعلی</option>
+              <option>غاشیه</option>
+              <option>فجر</option>
+              <option>بلد</option>
+              <option>شمس</option>
+              <option>لیل</option>
+              <option>ضحی</option>
+              <option>انشراح</option>
+              <option>تین</option>
+              <option>علق</option>
+              <option>قدر</option>
+              <option>بینه</option>
+              <option>زلزال</option>
+              <option>عادیات</option>
+              <option>قارعة</option>
+              <option>تکاثر</option>
+              <option>عصر</option>
+              <option>همزه</option>
+              <option>فیل</option>
+              <option>قریش</option>
+              <option>ماعون</option>
+              <option>کوثر</option>
+              <option>کافرون</option>
+              <option>نصر</option>
+              <option>مسد</option>
+              <option>اخلاص</option>
+              <option>فلق</option>
+              <option>ناس</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width: 180px;">
+            <label for="oAyeNum">انتخاب آیه</label>
+            <select id="oAyeNum" onchange="onAyeChange()" aria-label="انتخاب آیه" name="oAyeNum"></select>
+          </div>
+          <div class="badges">
+            <span class="badge" id="metaSure"></span>
+            <span class="badge" id="metaAyah"></span>
+          </div>
+        </div>
+        <div class="control-row" style="gap: 10px;">
+          <button class="pill-button" onClick="CopySure();">📜 کپی متن سوره</button>
+          <button class="pill-button" onClick="Copy(oViewQuran.value);">📋 کپی متن آیه</button>
+          <button class="pill-button" onClick="Copy(oViewTarjome.value);">📄 کپی ترجمه</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="gap: 12px;">
+      <label for="oViewQuran">متن آیه</label>
+      <textarea id="oViewQuran" class="textarea" aria-label="متن آیه"></textarea>
+      <label for="oViewTarjome" style="margin-top: 6px;">ترجمه فارسی</label>
+      <textarea id="oViewTarjome" class="textarea translation" aria-label="ترجمه فارسی"></textarea>
+    </section>
+  </main>
+
+  <script language="javascript">
+  //-------------------------------------------------------
+  function GenerateData(Text)
+  {
+          var sure=Text.split(" + ");
+          for(var i=0;i<sure.length;i++)
+          {
+                  var ayat=sure[i].split(" - ");
+                  sure[i]=ayat;
+          }
+          return sure;
+  }
+  //-------------------------------------------------------
+  function onSureChange()
+  {
+          var is=oSureName.selectedIndex;
+          var count=Quran[is].length
+          oAyeNum.innerHTML="";
+          for(var i=count;i>=1;--i)
+          {
+                  var option=document.createElement('option');
+                  option.text=option.value=i;
+                  oAyeNum.add(option,0);
+          }
+          oAyeNum.selectedIndex=0;
+          onAyeChange();
+  }
+  //-------------------------------------------------------
+  function onAyeChange()
+  {
+          var is=oSureName.selectedIndex;
+          var ia=oAyeNum.selectedIndex;
+          oViewQuran.value=Quran[is][ia];
+          oViewTarjome.value=Tarjome[is][ia];
+          updateMeta(is, ia);
+  }
+  //-------------------------------------------------------
+  function Copy(Text)
+  {
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(Text);
+          } else {
+            window.clipboardData.setData("Text",Text)
+          }
+  }
+  //-------------------------------------------------------
+  function CopySure()
+  {
+          var is=oSureName.selectedIndex;
+          var Text=Quran[is].join(" ");
+          Copy(Text);
+  }
+  //-------------------------------------------------------
+  function updateMeta(is, ia){
+    var sureMeta=document.getElementById('metaSure');
+    var ayahMeta=document.getElementById('metaAyah');
+    sureMeta.innerText='سوره '+oSureName.options[is].text;
+    ayahMeta.innerText='آیه '+(parseInt(oAyeNum.options[ia].value,10));
+  }
+  //-------------------------------------------------------
+  var Quran=GenerateData(QuranTextTG);
+  var Tarjome=GenerateData(TarjomeText);
+  onSureChange();
+  </script>
+</body>
+</html>
 //-------------------------------------------------------
 var Quran=GenerateData(QuranTextTG);
 var Tarjome=GenerateData(TarjomeText);
