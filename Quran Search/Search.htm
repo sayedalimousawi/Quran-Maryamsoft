@@ -10,14 +10,14 @@
   <script language="javascript" src="Sure.js"></script>
   <style>
     :root {
-      --bg: linear-gradient(135deg, #0f172a, #111827);
-      --card: #0b1222;
+      --bg: linear-gradient(135deg, #e8fff3, #d2ffec);
+      --card: #f5fff7;
       --accent: #16a34a;
-      --accent-2: #22c55e;
-      --muted: #9ca3af;
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #f3f4f6;
-      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+      --accent-2: #0ea5e9;
+      --muted: #3b5041;
+      --border: rgba(7, 65, 35, 0.15);
+      --text: #063321;
+      --shadow: 0 20px 60px -22px rgba(6, 51, 33, 0.35);
     }
 
     * { box-sizing: border-box; }
@@ -39,59 +39,31 @@
     body::before {
       content: "";
       position: fixed;
-      inset: -50% 0 auto 0;
-      height: 420px;
-      background: radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.2), transparent 35%),
-        radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.18), transparent 32%);
-      filter: blur(10px);
-      opacity: 0.7;
+      inset: -20% 0 auto 0;
+      height: 380px;
+      background: radial-gradient(circle at 15% 20%, rgba(52, 211, 153, 0.35), transparent 36%),
+        radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.26), transparent 32%);
+      filter: blur(20px);
+      opacity: 0.8;
       pointer-events: none;
     }
 
     .page {
-      width: min(1100px, 100%);
+      width: min(1200px, 100%);
       display: grid;
-      gap: 20px;
+      gap: 18px;
       position: relative;
       z-index: 1;
     }
 
-    header {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    header { display: grid; gap: 6px; }
+    .title { font-size: 32px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.7; }
 
-    .title {
-      font-size: 32px;
-      font-weight: 700;
-      margin: 0;
-      letter-spacing: -0.5px;
-    }
+    .meta-bar { display: flex; gap: 10px; flex-wrap: wrap; }
+    .meta-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: #e8fff1; border: 1px solid var(--border); color: var(--muted); font-size: 14px; }
 
-    .subtitle {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .meta-bar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .meta-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .section-title { margin: 0 0 6px; font-weight: 800; color: #064e3b; letter-spacing: -0.2px; }
 
     .card {
       background: var(--card);
@@ -101,43 +73,38 @@
       box-shadow: var(--shadow);
     }
 
-    label { display: block; font-weight: 600; margin-bottom: 10px; }
+    label { display: block; font-weight: 700; margin-bottom: 8px; color: #0f5132; }
 
-    textarea {
+    textarea, select, input[type='number'] {
       width: 100%;
       border-radius: 14px;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255, 255, 255, 0.9);
       color: var(--text);
-      padding: 16px;
-      font-size: 20px;
+      padding: 14px;
+      font-size: 18px;
       resize: vertical;
       font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif;
       transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
-    textarea:focus {
+    textarea:focus, select:focus, input[type='number']:focus {
       outline: none;
       border-color: rgba(22, 163, 74, 0.6);
       box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2);
-      background: rgba(255, 255, 255, 0.04);
+      background: #ffffff;
     }
 
-    .actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 14px;
-    }
+    textarea { min-height: 120px; }
+
+    .actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
 
     button {
       border: none;
       border-radius: 12px;
-      background: linear-gradient(135deg, #22c55e, #15803d);
-      color: #0a0f1e;
-      font-weight: 700;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #052e16;
+      font-weight: 800;
       padding: 12px 18px;
       cursor: pointer;
       font-size: 16px;
@@ -148,105 +115,78 @@
       transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s ease;
     }
 
-    button:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    button:hover { transform: translateY(-1px); filter: brightness(1.05); }
     button:active { transform: translateY(0); box-shadow: 0 8px 18px -10px rgba(34, 197, 94, 0.55); }
 
-    .secondary {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      box-shadow: none;
-      border: 1px solid var(--border);
-      padding-inline: 14px;
-    }
+    .secondary { background: #e8fff1; color: #0f5132; box-shadow: none; border: 1px solid var(--border); }
+    .ghost { background: transparent; color: #0f5132; border: 1px dashed var(--border); box-shadow: none; }
 
-    .secondary:hover { filter: brightness(1.08); }
-
-    .status {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .status strong { color: var(--accent-2); }
+    .status { color: var(--muted); font-size: 14px; }
+    .status strong { color: var(--accent); }
 
     .results-wrapper { display: grid; gap: 12px; }
 
-    .results {
-      display: grid;
-      gap: 12px;
-      max-height: 520px;
-      overflow: auto;
-      padding: 6px 2px;
-    }
+    .results { display: grid; gap: 12px; max-height: 520px; overflow: auto; padding: 6px 2px; }
 
     .result-card {
-      background: rgba(255, 255, 255, 0.03);
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 16px;
       display: grid;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: rgba(22, 163, 74, 0.16);
-      color: #4ade80;
-      font-weight: 700;
-      font-size: 18px;
-    }
+    .badge { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 42px; border-radius: 12px; background: rgba(22, 163, 74, 0.14); color: #166534; font-weight: 800; font-size: 18px; }
 
-    .ayah { margin: 0; font-size: 24px; line-height: 1.8; font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif; }
+    .ayah { margin: 0; font-size: 24px; line-height: 1.8; font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif; color: #052e16; }
     .meta { margin: 0; color: var(--muted); font-size: 14px; }
 
-    .highlight {
-      background: rgba(74, 222, 128, 0.16);
-      border-bottom: 2px solid rgba(34, 197, 94, 0.9);
-      padding: 1px 4px;
-      border-radius: 6px;
-    }
+    .highlight { background: rgba(74, 222, 128, 0.25); border-bottom: 2px solid rgba(34, 197, 94, 0.9); padding: 1px 4px; border-radius: 6px; }
 
-    .hint-list {
-      display: grid;
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      color: var(--muted);
-    }
+    .controls-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .control { display: grid; gap: 8px; }
 
-    .hint-item {
-      display: grid;
-      gap: 4px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px dashed var(--border);
-    }
-
-    .hint-title { font-weight: 700; color: var(--text); margin: 0; }
+    .hint-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; color: var(--muted); }
+    .hint-item { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.88); border: 1px dashed var(--border); }
+    .hint-title { font-weight: 800; color: #064e3b; margin: 0; }
     .hint-text { margin: 0; }
 
-    .empty-state {
-      text-align: center;
-      padding: 32px 16px;
-      border: 1px dashed var(--border);
-      border-radius: 16px;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.02);
-    }
+    .empty-state { text-align: center; padding: 32px 16px; border: 1px dashed var(--border); border-radius: 16px; color: var(--muted); background: rgba(255, 255, 255, 0.9); }
+    .empty-state strong { color: var(--accent); }
 
-    .empty-state strong { color: var(--accent-2); }
+    .result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .mini { font-size: 14px; padding: 8px 10px; }
+
+    .context-box { border: 1px solid var(--border); border-radius: 12px; background: #f1fff7; padding: 12px; display: grid; gap: 6px; }
+    .context-line { display: flex; align-items: baseline; gap: 8px; font-size: 16px; color: #0f5132; }
+    .context-line.current { background: #dfffee; border-radius: 8px; padding: 6px; font-weight: 700; }
+    .context-line .ayah-meta { color: #166534; font-weight: 700; }
+
+    .range-preview { border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #ffffff; display: grid; gap: 6px; max-height: 260px; overflow: auto; }
+    .range-line { display: flex; gap: 10px; align-items: baseline; }
+    .range-line .ayah-meta { color: #0f5132; font-weight: 700; min-width: 66px; }
+    .range-line .ayah-text { font-size: 20px; line-height: 1.7; }
+
+    .navigator { border: 1px solid var(--border); border-radius: 14px; background: #ffffff; padding: 12px; max-height: 340px; overflow: auto; display: grid; gap: 8px; }
+    .nav-sure-title { font-weight: 800; color: #064e3b; padding: 6px 10px; background: #e8fff1; border-radius: 10px; border: 1px solid var(--border); }
+    .nav-line { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 10px; }
+    .nav-line:nth-child(even) { background: #f8fff9; }
+    .nav-line .nav-number { color: #166534; font-weight: 700; min-width: 42px; }
+    .nav-line .nav-text { font-size: 18px; line-height: 1.6; }
+    .nav-line.bismillah { background: #e0ffef; border: 1px solid rgba(22, 163, 74, 0.2); }
+
+    .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .small-note { color: var(--muted); font-size: 13px; }
 
     @media (max-width: 768px) {
       body { padding: 20px 12px 32px; }
       .title { font-size: 26px; }
-      textarea { font-size: 18px; }
-      .ayah { font-size: 20px; }
+      textarea { font-size: 20px; }
+      .ayah { font-size: 22px; }
+      .actions { flex-direction: column; align-items: flex-start; }
+      .result-actions { width: 100%; }
+      .mini { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -254,15 +194,16 @@
   <main class="page">
     <header>
       <p class="title">جستجوی هوشمند قرآن</p>
-      <p class="subtitle">عبارت یا واژه مورد نظر خود را بنویسید تا آیات مرتبط در کم‌ترین زمان نمایش داده شود.</p>
+      <p class="subtitle">عبارت یا واژه مورد نظر خود را بنویسید تا آیات مرتبط همراه با ابزارهای کپی و مرور سریع نمایش داده شود.</p>
       <div class="meta-bar">
         <span class="meta-chip">⚡ سرعت نمایش فوری نتایج</span>
-        <span class="meta-chip">⌨ جستجو با Enter</span>
-        <span class="meta-chip">✨ برجسته‌سازی عبارت در متن</span>
+        <span class="meta-chip">✨ برجسته‌سازی عبارت و زمینه</span>
+        <span class="meta-chip">🌿 رنگ‌های روشن و شاد</span>
       </div>
     </header>
 
     <section class="card">
+      <p class="section-title">جستجو</p>
       <label for="oStrSearch">عبارت مورد جستجو</label>
       <textarea id="oStrSearch" rows="3" placeholder="مثال: الرحمن الرحیم" aria-label="عبارت مورد جستجو" onkeydown="handleKeydown(event)"></textarea>
       <div class="actions">
@@ -276,29 +217,77 @@
             <span>پاک کردن</span>
           </button>
         </div>
+        <div class="flex-between" style="gap: 12px;">
+          <div class="small-note">تعداد آیات قبل و بعد در نتایج</div>
+          <input type="range" min="0" max="5" value="1" id="contextRadius" oninput="updateContextLabel()" />
+          <span class="badge" id="contextLabel">۱</span>
+        </div>
         <span id="resultMeta" class="status" aria-live="polite">برای شروع، عبارت خود را وارد کنید.</span>
       </div>
     </section>
 
     <section class="card results-wrapper">
+      <p class="section-title">نتایج جستجو</p>
       <div class="results" id="oResult" aria-live="polite"></div>
-      <div>
-        <ul class="hint-list">
-          <li class="hint-item">
-            <p class="hint-title">نمونه پرس‌وجو</p>
-            <p class="hint-text">ترکیب چند کلمه مثل «الرحمن الرحیم» یا «نور ایمان» را بنویسید تا آیات مرتبط به ترتیب نمایش داده شود.</p>
-          </li>
-          <li class="hint-item">
-            <p class="hint-title">ترفندهای سرعتی</p>
-            <p class="hint-text">کلید Enter یا Ctrl + Enter جستجو را آغاز می‌کند و دکمه پاک‌سازی نتیجه را ریست می‌کند.</p>
-          </li>
-        </ul>
+    </section>
+
+    <section class="card">
+      <div class="flex-between">
+        <p class="section-title">نمایش و کپی بازه‌ای از آیات</p>
+        <span id="rangeMeta" class="small-note"></span>
       </div>
+      <div class="controls-grid">
+        <div class="control">
+          <label for="rangeSure">انتخاب سوره</label>
+          <select id="rangeSure" onchange="updateRangeLimits()"></select>
+        </div>
+        <div class="control">
+          <label for="rangeStart">از آیه</label>
+          <input type="number" id="rangeStart" min="1" value="1" oninput="renderRange()" />
+        </div>
+        <div class="control">
+          <label for="rangeEnd">تا آیه</label>
+          <input type="number" id="rangeEnd" min="1" value="1" oninput="renderRange()" />
+        </div>
+        <div class="control" style="align-self: end;">
+          <div class="result-actions">
+            <button class="mini" onclick="renderRange()">نمایش</button>
+            <button class="mini secondary" onclick="copyRange()">کپی بازه</button>
+          </div>
+        </div>
+      </div>
+      <div class="range-preview" id="rangePreview"></div>
+    </section>
+
+    <section class="card">
+      <div class="flex-between">
+        <p class="section-title">نویگیتور کامل قرآن</p>
+        <span class="small-note">در هر سطر یک آیه؛ عنوان سوره و «بسم الله الرحمن الرحیم» جداگانه نمایش داده شده است.</span>
+      </div>
+      <div class="navigator" id="navigatorList"></div>
+    </section>
+
+    <section class="card" style="background: rgba(255,255,255,0.85);">
+      <p class="section-title">راهنما</p>
+      <ul class="hint-list">
+        <li class="hint-item">
+          <p class="hint-title">کپی سریع نتایج</p>
+          <p class="hint-text">برای هر نتیجه، دکمه کپی آیه و کپی همراه با آیات قبل و بعد در دسترس است.</p>
+        </li>
+        <li class="hint-item">
+          <p class="hint-title">بازه‌های دلخواه</p>
+          <p class="hint-text">می‌توانید یک سوره را انتخاب کرده و از آیه‌ای به آیه دیگر نمایش و کپی بگیرید.</p>
+        </li>
+        <li class="hint-item">
+          <p class="hint-title">مرور یک‌جا</p>
+          <p class="hint-text">نویگیتور پایینی تمام قرآن را با عنوان سوره و بسم الله در یک سطر جداگانه نشان می‌دهد.</p>
+        </li>
+      </ul>
     </section>
   </main>
 
   <script language="javascript">
-  //---------------------------------------------------------------------------------------------
+  //-------------------------------------------------------
   mFatheh=Char(1614)
   mKasreh=Char(1616)
   mZameh=Char(1615)
@@ -429,6 +418,43 @@
     oStrSearch.focus();
   }
   //-------------------------------------------------------
+  function Copy(Text)
+  {
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(Text);
+          } else {
+            window.clipboardData.setData("Text",Text)
+          }
+  }
+  //-------------------------------------------------------
+  function getSureName(index){
+    var s = Sure[index];
+    if(Array.isArray(s)) return s[0];
+    return s;
+  }
+  //-------------------------------------------------------
+  function buildContextText(sureIndex, ayahIndex, radius){
+    var start=Math.max(0, ayahIndex-radius);
+    var end=Math.min(QuranTG[sureIndex].length-1, ayahIndex+radius);
+    var parts=[];
+    for(var k=start;k<=end;k++){
+      parts.push('سوره '+getSureName(sureIndex)+' | آیه '+(k+1)+'\n'+QuranTG[sureIndex][k]);
+    }
+    return parts.join('\n');
+  }
+  //-------------------------------------------------------
+  function buildContextBlock(sureIndex, ayahIndex, radius){
+    if(radius===0) return '';
+    var start=Math.max(0, ayahIndex-radius);
+    var end=Math.min(QuranTG[sureIndex].length-1, ayahIndex+radius);
+    var lines=[];
+    for(var k=start;k<=end;k++){
+      var cls='context-line'+(k===ayahIndex?' current':'');
+      lines.push('<div class="'+cls+'"><span class="ayah-meta">آیه '+(k+1)+'</span><span class="ayah-text">'+QuranTG[sureIndex][k]+'</span></div>');
+    }
+    return '<div class="context-box">'+lines.join('')+'</div>';
+  }
+  //-------------------------------------------------------
   function SmartSearch()
   {
           var inputValue=oStrSearch.value.trim().replace(/\s+/g,' ');
@@ -441,6 +467,7 @@
           sFind=ReplaceAll(sFind,"ک","ك"); // Kaf Arab
           count=0
           var fragments=[];
+          var contextRadius=parseInt(document.getElementById('contextRadius').value,10) || 0;
           for(var i=0;i<Quran.length;i++)
           {
                   for(var j=0;j<Quran[i].length;j++)
@@ -450,9 +477,18 @@
                           {
                                   count++;
                                   var ayahHighlighted=highlightMatch(QuranTG[i][j], sFind);
+                                  var sureName=getSureName(i);
+                                  var contextHtml=buildContextBlock(i,j,contextRadius);
                                   fragments.push(
-                                    "<article class='result-card'><div class='badge'>"+count+
-                                    "</div><p class='ayah'>"+ayahHighlighted+"</p><p class='meta'>سوره " + Sure[i] + " — آیه " + (j+1) + "</p></article>"
+                                    "<article class='result-card'>"+
+                                    "<div style='display:flex; gap:10px; align-items:center;'><span class='badge'>"+count+"</span>"+
+                                    "<div><p class='ayah'>"+ayahHighlighted+"</p><p class='meta'>سوره " + sureName + " — آیه " + (j+1) + "</p></div></div>"+
+                                    "<div class='result-actions'>"+
+                                      "<button type='button' class='mini' onclick='copyAyah("+i+","+j+")'>📋 کپی آیه</button>"+
+                                      "<button type='button' class='mini secondary' onclick='copyAyahWithContext("+i+","+j+")'>📄 کپی همراه زمینه</button>"+
+                                    "</div>"+
+                                    contextHtml+
+                                    "</article>"
                                   );
                           }
                   }
@@ -467,14 +503,98 @@
           }
   }
   //-------------------------------------------------------
+  function copyAyah(sureIndex, ayahIndex){
+    Copy(QuranTG[sureIndex][ayahIndex]);
+  }
+  //-------------------------------------------------------
+  function copyAyahWithContext(sureIndex, ayahIndex){
+    var radius=parseInt(document.getElementById('contextRadius').value,10) || 0;
+    Copy(buildContextText(sureIndex, ayahIndex, radius));
+  }
+  //-------------------------------------------------------
+  function updateContextLabel(){
+    var ctx=parseInt(document.getElementById('contextRadius').value,10) || 0;
+    document.getElementById('contextLabel').innerText=ctx.toLocaleString('fa-IR');
+  }
+  //-------------------------------------------------------
+  function populateSureSelect(){
+    var select=document.getElementById('rangeSure');
+    select.innerHTML='';
+    for(var i=0;i<Sure.length;i++){
+      var option=document.createElement('option');
+      option.value=i;
+      option.text=getSureName(i);
+      select.add(option);
+    }
+  }
+  //-------------------------------------------------------
+  function updateRangeLimits(){
+    var sureIndex=parseInt(document.getElementById('rangeSure').value,10) || 0;
+    var ayahCount=QuranTG[sureIndex].length;
+    var startInput=document.getElementById('rangeStart');
+    var endInput=document.getElementById('rangeEnd');
+    startInput.max=endInput.max=ayahCount;
+    if(parseInt(startInput.value,10)<1) startInput.value=1;
+    if(parseInt(endInput.value,10)<1) endInput.value=ayahCount;
+    if(parseInt(startInput.value,10)>ayahCount) startInput.value=ayahCount;
+    if(parseInt(endInput.value,10)>ayahCount) endInput.value=ayahCount;
+    if(parseInt(endInput.value,10)<parseInt(startInput.value,10)) endInput.value=startInput.value;
+    document.getElementById('rangeMeta').innerText='این سوره '+ayahCount+' آیه دارد.';
+    renderRange();
+  }
+  //-------------------------------------------------------
+  function renderRange(){
+    var sureIndex=parseInt(document.getElementById('rangeSure').value,10) || 0;
+    var start=parseInt(document.getElementById('rangeStart').value,10) || 1;
+    var end=parseInt(document.getElementById('rangeEnd').value,10) || start;
+    if(start<1) start=1;
+    if(end<start) end=start;
+    var ayahCount=QuranTG[sureIndex].length;
+    if(start>ayahCount) start=ayahCount;
+    if(end>ayahCount) end=ayahCount;
+    document.getElementById('rangeStart').value=start;
+    document.getElementById('rangeEnd').value=end;
+    var lines=[];
+    for(var a=start-1; a<end; a++){
+      lines.push("<div class='range-line'><span class='ayah-meta'>آیه "+(a+1)+"</span><span class='ayah-text'>"+QuranTG[sureIndex][a]+"</span></div>");
+    }
+    document.getElementById('rangePreview').innerHTML=lines.join('');
+  }
+  //-------------------------------------------------------
+  function copyRange(){
+    var sureIndex=parseInt(document.getElementById('rangeSure').value,10) || 0;
+    var start=parseInt(document.getElementById('rangeStart').value,10) || 1;
+    var end=parseInt(document.getElementById('rangeEnd').value,10) || start;
+    var parts=['سوره '+getSureName(sureIndex)];
+    for(var a=start-1; a<end; a++){
+      parts.push('آیه '+(a+1)+'\n'+QuranTG[sureIndex][a]);
+    }
+    Copy(parts.join('\n'));
+  }
+  //-------------------------------------------------------
+  function renderNavigator(){
+    var holder=document.getElementById('navigatorList');
+    var fragments=[];
+    for(var i=0;i<QuranTG.length;i++){
+      fragments.push('<div class="nav-sure-title">سوره '+getSureName(i)+'</div>');
+      for(var j=0;j<QuranTG[i].length;j++){
+        var cls='nav-line'+(j===0 && QuranTG[i][j].indexOf('بسم')!==-1 ? ' bismillah' : '');
+        fragments.push('<div class="'+cls+'"><span class="nav-number">'+(j+1)+'</span><span class="nav-text">'+QuranTG[i][j]+'</span></div>');
+      }
+    }
+    holder.innerHTML=fragments.join('');
+  }
+  //-------------------------------------------------------
   var Quran=GenerateData(QuranText);
   var QuranTG=GenerateData(QuranTextTG);
   var Sure=GenerateData(SureText);
 
+  updateContextLabel();
+  populateSureSelect();
+  updateRangeLimits();
+  renderNavigator();
   clearResults();
 
   </script>
 </body>
 </html>
-</html>
-
