@@ -29,17 +29,36 @@
       display: flex;
       justify-content: center;
       padding: 32px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -40% 0 auto 0;
+      height: 380px;
+      background: radial-gradient(circle at 30% 10%, rgba(34, 197, 94, 0.16), transparent 36%),
+        radial-gradient(circle at 70% -10%, rgba(16, 185, 129, 0.15), transparent 30%);
+      filter: blur(12px);
+      opacity: 0.75;
+      pointer-events: none;
     }
 
     .page {
       width: min(1100px, 100%);
       display: grid;
       gap: 20px;
+      position: relative;
+      z-index: 1;
     }
 
     header { display: grid; gap: 6px; }
     .title { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -0.4px; }
     .subtitle { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .meta-chip { padding: 8px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--muted); font-size: 14px; }
 
     .card {
       background: var(--card);
@@ -52,7 +71,7 @@
     }
 
     .controls { display: grid; gap: 12px; }
-    .control-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .control-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
 
     label { font-weight: 600; display: block; margin-bottom: 6px; }
 
@@ -65,10 +84,10 @@
       padding: 12px;
       font-size: 16px;
       font-family: inherit;
-      transition: border 0.2s ease, box-shadow 0.2s ease;
+      transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
-    select:focus, textarea:focus { outline: none; border-color: rgba(34, 197, 94, 0.6); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2); }
+    select:focus, textarea:focus { outline: none; border-color: rgba(34, 197, 94, 0.6); box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2); background: rgba(255, 255, 255, 0.04); }
 
     .pill-button {
       width: auto;
@@ -100,10 +119,15 @@
     .badges { display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 14px; }
     .badge { padding: 8px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border); }
 
+    .tips { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; color: var(--muted); }
+    .tip-card { border: 1px dashed var(--border); border-radius: 12px; padding: 12px 14px; background: rgba(255, 255, 255, 0.02); }
+    .tip-title { margin: 0 0 4px; font-weight: 700; color: var(--text); }
+    .tip-text { margin: 0; }
+
     @media (max-width: 768px) {
       body { padding: 20px 12px 32px; }
       .title { font-size: 24px; }
-      .control-row { flex-direction: column; }
+      .control-row { flex-direction: column; align-items: stretch; }
       .pill-button { width: 100%; justify-content: center; }
       .textarea { font-size: 22px; }
     }
@@ -114,6 +138,11 @@
     <header>
       <p class="title">تلاوت و ترجمه</p>
       <p class="subtitle">سوره و آیه دلخواه خود را انتخاب کرده و متن عربی و ترجمه فارسی را در یک محیط خلوت و خوانا ببینید.</p>
+      <div class="meta-row">
+        <span class="meta-chip">🎧 آماده برای روخوانی سریع</span>
+        <span class="meta-chip">📄 کپی یک‌کلیکی متن‌ها</span>
+        <span class="meta-chip">⌨ پیمایش و انتخاب با کیبورد</span>
+      </div>
     </header>
 
     <section class="card">
@@ -252,6 +281,16 @@
           <button class="pill-button" onClick="Copy(oViewQuran.value);">📋 کپی متن آیه</button>
           <button class="pill-button" onClick="Copy(oViewTarjome.value);">📄 کپی ترجمه</button>
         </div>
+        <ul class="tips">
+          <li class="tip-card">
+            <p class="tip-title">مسیر سریع انتخاب</p>
+            <p class="tip-text">پس از انتخاب سوره، فهرست آیات به‌صورت خودکار به‌روز می‌شود؛ کافیست Enter را بزنید تا ترجمه همزمان پر شود.</p>
+          </li>
+          <li class="tip-card">
+            <p class="tip-title">کپی بدون حاشیه</p>
+            <p class="tip-text">دکمه‌های بالای صفحه متن عربی، ترجمه یا کل سوره را مستقیماً در کلیپ‌بورد قرار می‌دهند.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -329,8 +368,4 @@
   </script>
 </body>
 </html>
-//-------------------------------------------------------
-var Quran=GenerateData(QuranTextTG);
-var Tarjome=GenerateData(TarjomeText);
-onSureChange();
 </script></body></html>

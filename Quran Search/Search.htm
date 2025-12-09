@@ -13,6 +13,7 @@
       --bg: linear-gradient(135deg, #0f172a, #111827);
       --card: #0b1222;
       --accent: #16a34a;
+      --accent-2: #22c55e;
       --muted: #9ca3af;
       --border: rgba(255, 255, 255, 0.08);
       --text: #f3f4f6;
@@ -31,12 +32,28 @@
       align-items: flex-start;
       justify-content: center;
       padding: 32px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -50% 0 auto 0;
+      height: 420px;
+      background: radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.2), transparent 35%),
+        radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.18), transparent 32%);
+      filter: blur(10px);
+      opacity: 0.7;
+      pointer-events: none;
     }
 
     .page {
       width: min(1100px, 100%);
       display: grid;
       gap: 20px;
+      position: relative;
+      z-index: 1;
     }
 
     header {
@@ -56,6 +73,24 @@
       margin: 0;
       color: var(--muted);
       line-height: 1.6;
+    }
+
+    .meta-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .card {
@@ -78,13 +113,14 @@
       font-size: 20px;
       resize: vertical;
       font-family: 'wm_Naskh Qurani 93', 'Vazirmatn', sans-serif;
-      transition: border 0.2s ease, box-shadow 0.2s ease;
+      transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     textarea:focus {
       outline: none;
       border-color: rgba(22, 163, 74, 0.6);
       box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .actions {
@@ -115,10 +151,24 @@
     button:hover { transform: translateY(-1px); filter: brightness(1.03); }
     button:active { transform: translateY(0); box-shadow: 0 8px 18px -10px rgba(34, 197, 94, 0.55); }
 
+    .secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      box-shadow: none;
+      border: 1px solid var(--border);
+      padding-inline: 14px;
+    }
+
+    .secondary:hover { filter: brightness(1.08); }
+
     .status {
       color: var(--muted);
       font-size: 14px;
     }
+
+    .status strong { color: var(--accent-2); }
+
+    .results-wrapper { display: grid; gap: 12px; }
 
     .results {
       display: grid;
@@ -160,6 +210,38 @@
       border-radius: 6px;
     }
 
+    .hint-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+    }
+
+    .hint-item {
+      display: grid;
+      gap: 4px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed var(--border);
+    }
+
+    .hint-title { font-weight: 700; color: var(--text); margin: 0; }
+    .hint-text { margin: 0; }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .empty-state strong { color: var(--accent-2); }
+
     @media (max-width: 768px) {
       body { padding: 20px 12px 32px; }
       .title { font-size: 26px; }
@@ -173,22 +255,45 @@
     <header>
       <p class="title">جستجوی هوشمند قرآن</p>
       <p class="subtitle">عبارت یا واژه مورد نظر خود را بنویسید تا آیات مرتبط در کم‌ترین زمان نمایش داده شود.</p>
+      <div class="meta-bar">
+        <span class="meta-chip">⚡ سرعت نمایش فوری نتایج</span>
+        <span class="meta-chip">⌨ جستجو با Enter</span>
+        <span class="meta-chip">✨ برجسته‌سازی عبارت در متن</span>
+      </div>
     </header>
 
     <section class="card">
       <label for="oStrSearch">عبارت مورد جستجو</label>
-      <textarea id="oStrSearch" rows="3" placeholder="مثال: الرحمن الرحیم" aria-label="عبارت مورد جستجو"></textarea>
+      <textarea id="oStrSearch" rows="3" placeholder="مثال: الرحمن الرحیم" aria-label="عبارت مورد جستجو" onkeydown="handleKeydown(event)"></textarea>
       <div class="actions">
-        <button type="button" onclick="SmartSearch()" aria-label="جستجو">
-          <span>🔍</span>
-          <span>جستجو</span>
-        </button>
-        <span id="resultMeta" class="status">برای شروع، عبارت خود را وارد کنید.</span>
+        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+          <button type="button" onclick="SmartSearch()" aria-label="جستجو">
+            <span>🔍</span>
+            <span>جستجو</span>
+          </button>
+          <button type="button" class="secondary" onclick="clearResults()" aria-label="پاک کردن">
+            <span>🧹</span>
+            <span>پاک کردن</span>
+          </button>
+        </div>
+        <span id="resultMeta" class="status" aria-live="polite">برای شروع، عبارت خود را وارد کنید.</span>
       </div>
     </section>
 
-    <section class="card">
+    <section class="card results-wrapper">
       <div class="results" id="oResult" aria-live="polite"></div>
+      <div>
+        <ul class="hint-list">
+          <li class="hint-item">
+            <p class="hint-title">نمونه پرس‌وجو</p>
+            <p class="hint-text">ترکیب چند کلمه مثل «الرحمن الرحیم» یا «نور ایمان» را بنویسید تا آیات مرتبط به ترتیب نمایش داده شود.</p>
+          </li>
+          <li class="hint-item">
+            <p class="hint-title">ترفندهای سرعتی</p>
+            <p class="hint-text">کلید Enter یا Ctrl + Enter جستجو را آغاز می‌کند و دکمه پاک‌سازی نتیجه را ریست می‌کند.</p>
+          </li>
+        </ul>
+      </div>
     </section>
   </main>
 
@@ -306,12 +411,29 @@
     }
   }
   //-------------------------------------------------------
+  function renderEmptyState(message){
+    return "<div class='empty-state'>"+message+"</div>";
+  }
+  //-------------------------------------------------------
+  function handleKeydown(event){
+    if(event.key==='Enter' && (event.ctrlKey || event.metaKey || !event.shiftKey)){
+      event.preventDefault();
+      SmartSearch();
+    }
+  }
+  //-------------------------------------------------------
+  function clearResults(){
+    oStrSearch.value='';
+    oResult.innerHTML=renderEmptyState('برای شروع، عبارت خود را وارد کنید.');
+    document.getElementById('resultMeta').innerHTML='برای شروع، عبارت خود را وارد کنید.';
+    oStrSearch.focus();
+  }
+  //-------------------------------------------------------
   function SmartSearch()
   {
-          var inputValue=oStrSearch.value.trim();
+          var inputValue=oStrSearch.value.trim().replace(/\s+/g,' ');
           if(!inputValue){
-            oResult.innerHTML="";
-            document.getElementById('resultMeta').innerText='برای شروع، عبارت خود را وارد کنید.';
+            clearResults();
             return;
           }
           var sFind=RemoveMarks(inputValue);
@@ -335,12 +457,13 @@
                           }
                   }
           }
-          oResult.innerHTML = fragments.join('');
           var meta=document.getElementById('resultMeta');
           if(count===0){
-            meta.innerText='موردی یافت نشد. لطفاً کلمه دیگری را امتحان کنید.';
+            oResult.innerHTML = renderEmptyState('موردی یافت نشد. <strong>لطفاً</strong> کلمه یا ترکیب دیگری را امتحان کنید.');
+            meta.innerHTML='موردی یافت نشد. <strong>جستجوی جدید</strong> را امتحان کنید.';
           } else {
-            meta.innerText=''+count+' نتیجه پیدا شد.';
+            oResult.innerHTML = fragments.join('');
+            meta.innerHTML=''+count+' نتیجه پیدا شد برای <strong>"'+inputValue+'"</strong>.';
           }
   }
   //-------------------------------------------------------
@@ -348,9 +471,10 @@
   var QuranTG=GenerateData(QuranTextTG);
   var Sure=GenerateData(SureText);
 
+  clearResults();
+
   </script>
 </body>
 </html>
-</body>
-</html>
+</html>
 
